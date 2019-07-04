@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700&display=swap'); /* website font */
+@import url('https://fonts.googleapis.com/css?family=Concert+One&display=swap'); /* logo font */
+
+body {
+  margin: auto 0px;
+  /* background-color: #2A2D34; */
+  font-family: 'Raleway', sans-serif;
+}
+
+.App {
+  text-align: center;
+}
+
+.dark-background {
+  background: #16222a; 
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364); 
+}
+
+.dark-background-hover {
+  background: #16222a; 
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364); 
+}
+
+.dark-background-hover:hover,
+.dark-background-hover:focus,
+.dark-background-hover:active{
+  background: #16222a; 
+  background: linear-gradient(to right, #16222a, #3a6073);
+}
+
+
+.header h1 {
+  color: white;
+  font-weight: bold;
+  margin-top: 100px;
+}
+
+.header h2 {
+  color: white;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+}
+.nav-link:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.logo {
+  font-family: 'Concert One', sans-serif;
+  font-size: 3em;
+  font-weight: bold;
+  user-select: none;
+}
+
+.home-search-bar {
+  margin-top: 40px;
+  width: 55%;
+}
+
+.show-more-button {
+  width: 15vw;
+  margin: 60px 0 160px 0;
+  color: #0f2027;
+  border-color: #0f2027;
+}
+
+.show-more-button:hover,
+.show-more-button:focus,
+.show-more-button:active {
+  color: #3a6073;
+  border-color: #3a6073;
+}
+
+.card { 
+  position: relative;
+  cursor: pointer;
+  width: 340px;
+  margin: 10px;
+  height: 340px;
+  background-color: #2A2D34;
+  overflow: hidden;
+  border-radius: .5em;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.8);
+}
+
+.card .likes {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  right: 10px;        
+  text-align: right;
+  bottom: 10px; 
+  color: #fff;
+  font-size: 1.1em;
+  vertical-align: center;
+  
+}
+
+.card .photo-name {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  left: 10px;        
+  text-align: right;
+  bottom: 10px; 
+  color: #fff;
+  
+}
+
+.card img {
+  display: block;
+  transition: transform .5s ease, filter .6s ease-in-out;
+}
+
+.card:hover img {
+  filter: brightness(30%);
+  transform: scale(1.2);
+}
+
+.card:hover .likes {
+  display: inline-block;
+}
+
+.card:hover .photo-name {
+  display: inline-block;
+}
+
+.overlay{
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  background-color: rgba(0,0,0,0.4);
+  z-index: 3; 
+}
+.icon {
+  position: relative;
+  outline: 0;
+  top: 1px;
+  left: 5px;
+}
+
+.modal-footer {
+  display: inline;
+}
+
+.ant-modal-header {
+  background: #16222a; 
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364); 
+  border: 0px;
+  border-radius: 10px 10px 0 0;
+  
+}
+
+.ant-modal-title{ 
+  color: white;
+}
+
+.ant-modal-close-icon{
+  color: white;
+}
+
+.ant-modal-content {
+  border-radius: 12px;
+  width: 100%;
+}
+
+.ant-modal-body {
+  border-radius: 10px;
+  text-align: center;
+  padding: 0px;
+}
+
+.photos {
+  margin: 20px 15vh;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  justify-items: center;
+  justify-content: center;
+  min-height: 70vh;
+}
+
+.footer {
+  height: 60px;
+  padding: 20px;
+}
