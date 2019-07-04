@@ -1,28 +1,31 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Input, Popover, Button, Col, Row, Dropdown, Icon, Menu } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
-import { GlobalContext } from './Global'
+import { StateContext } from './Global'
 import Login from './Login'
 import Register from './Register'
 import Upload from './Upload'
 
 function Topbar ({ match, backgroundClasses, history }) {
   const [ uploadModalVisibile, setUploadModalVisibile ] = useState(false)
-  const [globalState] = GlobalContext().reducer
-  const { actions } = GlobalContext()
+  const { isLoggedIn, state, dispatch } = useContext(StateContext)
+  // const context = useContext(StateContext)
+  // const [bla] = context.reducer
 
-  let searchQuery = match.params.query ? match.params.query : ''
+  let searchQuery = match.params.query || ''
 
   const setUploadModalUnvisibile = () => {
     setUploadModalVisibile(false)
   }
 
   const handleLogout = () => {
-    actions.logout()
+    dispatch({ type: 'LOGOUT' })
+    window.localStorage.clear()
+    history.push('/')
   }
 
   const handleProfile = () => {
-    history.push('/user/' + globalState.user.username + '/uploads')
+    history.push('/user/' + state.user.username + '/uploads')
   }
 
   const menu =
@@ -69,7 +72,7 @@ function Topbar ({ match, backgroundClasses, history }) {
             : ''}
         </Col>
         <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>
-          { (globalState.isLoggedIn) ? loggedInControlos : loggedOutControlos}
+          { (isLoggedIn) ? loggedInControlos : loggedOutControlos}
         </Col>
       </Row>
       <Upload visible={uploadModalVisibile} setUnvisibile={setUploadModalUnvisibile} />

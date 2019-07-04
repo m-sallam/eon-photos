@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import Header from './Header'
 import Photos from './Photos'
 import { Button } from 'antd'
@@ -8,7 +9,7 @@ function Photo ({ match }) {
     <div className='home'>
       <Header />
       <Photos />
-      <Button size='large' className='show-more-button' href='/search' ghost> Show More</Button>
+      <Link to='/search'><Button size='large' className='show-more-button' ghost> Show More  </Button></Link>
     </div>
   )
 }

@@ -6,7 +6,7 @@ import { GlobalContext } from './Global'
 
 function PhotoModal (props) {
   const selectedPhoto = useContext(PhotosContext)
-  const [globalState] = GlobalContext().reducer
+  const { state } = GlobalContext()
 
   let link = React.createRef()
 
@@ -28,7 +28,7 @@ function PhotoModal (props) {
   const footer =
     <div className='modal-footer'>
       <textarea readOnly style={{ position: 'absolute', left: '-9999px' }} ref={link} value={selectedPhoto.selectedPhotoLink} />
-      <Button disabled={!globalState.isLoggedIn} style={{ float: 'left' }}shape='circle' type='danger' onClick={like} title='Like' ghost ><Icon type='heart' theme={likeTheme} /></Button>
+      <Button disabled={!state.isLoggedIn} style={{ float: 'left' }}shape='circle' type='danger' onClick={like} title='Like' ghost ><Icon type='heart' theme={likeTheme} /></Button>
       <span title='Likes' style={{ float: 'left', marginLeft: '5px', marginTop: '5px' }}>{selectedPhoto.selectedPhotoLikes}</span>
       <Popover trigger='click' content='Link Copied' title={null} >
         <Button type='primary' shape='circle' style={{ color: 'orange', borderColor: 'orange' }} onClick={copy} title='Copy Image Link' ghost><Icon type='copy' theme='filled' /></Button>

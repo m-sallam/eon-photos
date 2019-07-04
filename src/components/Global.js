@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react'
+import React, { createContext, useContext, useReducer, useLayoutEffect, useState } from 'react'
 import { request } from '../request'
 import { withRouter } from 'react-router-dom'
 import { message } from 'antd'
@@ -34,29 +34,18 @@ const reducer = (state, action) => {
 }
 
 const GlobalState = ({ children, history }) => {
-  let [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  const register = async (data) => {
-    if (state.isLoggedIn) return { error: true, message: 'Already logged in' }
-    let res = await request('/users', 'POST', JSON.stringify(data))
-    if (!res.error) {
-      dispatch({ type: 'REFRESH_TOKEN', payload: res.body.token })
-      dispatch({ type: 'SET_USER', payload: res.body.user })
-    }
-    return res
+  // const unlisten = history.listen((location, action) => {
+  //   console.log('on route change')
+  // })
+  const contexValue = {
+    isLoggedIn,
+    state,
+    dispatch: dispatch
   }
-
-  const login = async (data) => {
-    if (state.isLoggedIn) return { error: true, message: 'Already logged in' }
-    let res = await request('/auth/login', 'POST', JSON.stringify(data))
-    if (!res.error) {
-      dispatch({ type: 'REFRESH_TOKEN', payload: res.body.token })
-      dispatch({ type: 'SET_USER', payload: res.body.user })
-    }
-    return res
-  }
-
-  const logout = async () => {
+  const logout = () => {
     dispatch({ type: 'LOGOUT' })
     window.localStorage.clear()
     history.push('/')
@@ -65,6 +54,7 @@ const GlobalState = ({ children, history }) => {
   const refreshToken = async () => {
     const token = window.localStorage.getItem('token')
     const expiresIn = window.localStorage.getItem('expiresIn')
+
     if (!token || !expiresIn) return false
 
     const date = Date.now()
@@ -81,27 +71,24 @@ const GlobalState = ({ children, history }) => {
     try {
       var parsedUser = JSON.parse(user)
       dispatch({ type: 'REFRESH_TOKEN', payload: res.body.token })
-      dispatch({ type: 'SET_USER', payload: JSON.parse(parsedUser) })
+      dispatch({ type: 'SET_USER', payload: parsedUser })
+      setIsLoggedIn(true)
       return true
     } catch (err) {
+      console.log(err)
       dispatch({ type: 'LOGOUT' })
       window.localStorage.clear()
       return false
     }
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     refreshToken()
     // eslint-disable-next-line
   }, [])
 
-  const contextValue = {
-    reducer: useReducer(reducer, initialState),
-    actions: { register, login, logout, refreshToken }
-  }
-
   return (
-    <StateContext.Provider value={contextValue}>
+    <StateContext.Provider value={contexValue}>
       {children}
     </StateContext.Provider>
   )

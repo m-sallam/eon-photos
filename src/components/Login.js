@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Spin, Form, Icon, Input, Button, message } from 'antd'
 import { GlobalContext } from './Global'
+import { request } from '../request'
 import { withRouter } from 'react-router-dom'
 
 function Login ({ form, history }) {
   let username = React.createRef()
   const { getFieldDecorator } = form
-  const { actions } = GlobalContext()
+  const { state, dispatch } = GlobalContext()
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -18,12 +19,16 @@ function Login ({ form, history }) {
     e.preventDefault()
     form.validateFields(async (err, values) => {
       if (!err) {
+        if (state.isLoggedIn) return message.error('Already logged in')
         setLoading(true)
-        const res = await actions.login(values)
+        let res = await request('/auth/login', 'POST', JSON.stringify(values))
         setLoading(false)
-        res.error
-          ? message.error(res.message)
-          : history.push('/user/' + res.body.user.username + '/uploads')
+        if (!res.error) {
+          dispatch({ type: 'REFRESH_TOKEN', payload: res.body.token })
+          dispatch({ type: 'SET_USER', payload: res.body.user })
+          history.push('/user/' + res.body.user.username + '/uploads')
+        }
+        message.error(res.message)
       }
     })
   }
