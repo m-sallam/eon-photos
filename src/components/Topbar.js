@@ -21,7 +21,7 @@ function Topbar ({ match, backgroundClasses, history }) {
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' })
     window.localStorage.clear()
-    history.push('/')
+    window.location = '/'
   }
 
   const handleProfile = () => {

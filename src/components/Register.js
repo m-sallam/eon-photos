@@ -27,8 +27,10 @@ function Register ({ form, history }) {
           dispatch({ type: 'REFRESH_TOKEN', payload: res.body.token })
           dispatch({ type: 'SET_USER', payload: res.body.user })
           history.push('/user/' + res.body.user.username + '/uploads')
+          message.success('Welcome, ' + res.body.user.username)
+        } else {
+          message.error(res.message)
         }
-        message.error(res.message)
       }
     })
   }
