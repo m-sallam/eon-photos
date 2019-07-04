@@ -1,6 +1,10 @@
 # eon-photos
 A photo gallery app using React.js
 
+## Environment Variables
+
+REACT_APP_SERVER_LOCATION : the root location of the API
+
 ## Available Scripts
 
 In the project directory, you can run:
