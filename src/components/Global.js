@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useLayoutEffect, useState } from 'react'
+import React, { createContext, useContext, useReducer, useEffect } from 'react'
 import { request } from '../request'
 import { withRouter } from 'react-router-dom'
 import { message } from 'antd'
@@ -14,19 +14,18 @@ const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_USER' :
       window.localStorage.setItem('user', JSON.stringify(action.payload))
-      state.user = action.payload
-      state.isLoggedIn = true
+      state = { ...state,
+        user: action.payload,
+        isLoggedIn: true
+      }
       return state
     case 'LOGOUT' :
-      state.user = null
-      state.token = null
-      state.isLoggedIn = false
-      return state
+      return { user: null, isLoggedIn: false, token: null }
     case 'REFRESH_TOKEN':
       const date = Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days from now
       window.localStorage.setItem('token', action.payload)
       window.localStorage.setItem('expiresIn', date)
-      state.token = action.payload
+      state = { ...state, token: action.payload }
       return state
     default:
       return state
@@ -35,16 +34,7 @@ const reducer = (state, action) => {
 
 const GlobalState = ({ children, history }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  // const unlisten = history.listen((location, action) => {
-  //   console.log('on route change')
-  // })
-  const contexValue = {
-    isLoggedIn,
-    state,
-    dispatch: dispatch
-  }
   const logout = () => {
     dispatch({ type: 'LOGOUT' })
     window.localStorage.clear()
@@ -72,7 +62,6 @@ const GlobalState = ({ children, history }) => {
       var parsedUser = JSON.parse(user)
       dispatch({ type: 'REFRESH_TOKEN', payload: res.body.token })
       dispatch({ type: 'SET_USER', payload: parsedUser })
-      setIsLoggedIn(true)
       return true
     } catch (err) {
       console.log(err)
@@ -82,13 +71,13 @@ const GlobalState = ({ children, history }) => {
     }
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     refreshToken()
     // eslint-disable-next-line
   }, [])
 
   return (
-    <StateContext.Provider value={contexValue}>
+    <StateContext.Provider value={{ state, dispatch }}>
       {children}
     </StateContext.Provider>
   )

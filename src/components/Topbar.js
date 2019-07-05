@@ -8,9 +8,7 @@ import Upload from './Upload'
 
 function Topbar ({ match, backgroundClasses, history }) {
   const [ uploadModalVisibile, setUploadModalVisibile ] = useState(false)
-  const { isLoggedIn, state, dispatch } = useContext(StateContext)
-  // const context = useContext(StateContext)
-  // const [bla] = context.reducer
+  const { state, dispatch } = useContext(StateContext)
 
   let searchQuery = match.params.query || ''
 
@@ -21,7 +19,7 @@ function Topbar ({ match, backgroundClasses, history }) {
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' })
     window.localStorage.clear()
-    window.location = '/'
+    history.push('/')
   }
 
   const handleProfile = () => {
@@ -72,7 +70,7 @@ function Topbar ({ match, backgroundClasses, history }) {
             : ''}
         </Col>
         <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>
-          { (isLoggedIn) ? loggedInControlos : loggedOutControlos}
+          { (state.isLoggedIn) ? loggedInControlos : loggedOutControlos}
         </Col>
       </Row>
       <Upload visible={uploadModalVisibile} setUnvisibile={setUploadModalUnvisibile} />
