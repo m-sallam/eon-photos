@@ -3,7 +3,7 @@ import PhotosContext from '../context/photos-context'
 import Photo from './Photo'
 import PhotoModal from './PhotoModal'
 import { request } from '../request'
-import { message } from 'antd'
+import { message, Spin } from 'antd'
 
 function Photos ({ query, passedPhotos }) {
   const [photos, setPhotos] = useState([])
@@ -15,6 +15,7 @@ function Photos ({ query, passedPhotos }) {
   const [selectedPhotoUser, setselectedPhotoUser] = useState('')
   const [selectedPhotoLikes, setSelectedPhotoLikes] = useState(0)
   const [selectedPhotoLiked, setSelectedPhotoLiked] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const PhotosContextValue = {
     modalVisible,
@@ -53,6 +54,7 @@ function Photos ({ query, passedPhotos }) {
   }
 
   useEffect(() => {
+    setLoading(true)
     async function getPhotos () {
       try {
         const res = query
@@ -60,6 +62,7 @@ function Photos ({ query, passedPhotos }) {
           : await request('/photos', 'GET')
 
         const requestedPhotos = passedPhotos || res.body
+        setLoading(false)
         setPhotos(requestedPhotos)
       } catch (err) {
         console.log(err)
@@ -78,9 +81,11 @@ function Photos ({ query, passedPhotos }) {
   return (
     <PhotosContext.Provider value={PhotosContextValue}>
       <PhotoModal />
-      <div className='photos'>
-        { photosContent }
-      </div>
+      <Spin spinning={loading}>
+        <div className='photos'>
+          { photosContent }
+        </div>
+      </Spin>
     </PhotosContext.Provider>
 
   )
