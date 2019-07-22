@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Input, Popover, Button, Col, Row, Dropdown, Icon, Menu } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
 import { StateContext } from './Global'
@@ -11,6 +11,13 @@ function Topbar ({ match, backgroundClasses, history }) {
   const { state, dispatch } = useContext(StateContext)
 
   let searchQuery = match.params.query || ''
+  const search = React.useRef()
+
+  useEffect(() => {
+    if (search.current) {
+      search.current.input.input.value = searchQuery
+    }
+  })
 
   const setUploadModalUnvisibile = () => {
     setUploadModalVisibile(false)
@@ -66,7 +73,7 @@ function Topbar ({ match, backgroundClasses, history }) {
         </Col>
         <Col xs={{ span: 18, order: 3 }} md={{ span: 11, order: 1 }}>
           {(match.path !== '/')
-            ? <Input.Search size='large' placeholder='Search Photos' value={searchQuery} onSearch={value => history.push('/search/' + value)} />
+            ? <Input.Search size='large' ref={search} placeholder='Search Photos' onSearch={value => history.push('/search/' + value)} />
             : ''}
         </Col>
         <Col xs={{ span: 12, order: 2 }} md={{ span: 6, order: 1 }}>

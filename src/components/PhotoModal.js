@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { Button, Icon, Modal, Popover } from 'antd'
+import React, { useContext, useState, useEffect } from 'react'
+import { Button, Icon, Modal, Popover, Spin } from 'antd'
 import { Link } from 'react-router-dom'
 import PhotosContext from '../context/photos-context'
 import { GlobalContext } from './Global'
@@ -7,8 +7,21 @@ import { GlobalContext } from './Global'
 function PhotoModal (props) {
   const selectedPhoto = useContext(PhotosContext)
   const { state } = GlobalContext()
+  const [imageSrc, setImageSrc] = useState('')
+  const [loading, setLoading] = useState(true)
 
   let link = React.createRef()
+
+  useEffect(() => {
+    setLoading(true)
+    const image = new window.Image()
+
+    image.onload = () => {
+      setImageSrc(selectedPhoto.selectedPhotoLink)
+      setLoading(false)
+    }
+    image.src = selectedPhoto.selectedPhotoLink
+  }, [selectedPhoto.selectedPhotoLink])
 
   const like = (e) => {
     if (selectedPhoto.selectedPhotoLiked) {
@@ -38,14 +51,16 @@ function PhotoModal (props) {
 
   return (
     <Modal
-      title={<div>{selectedPhoto.selectedPhotoName}  by   <Link to={'/user/' + selectedPhoto.selectedPhotoUser + '/uploads'} >user</Link></div>}
+      title={<div>{selectedPhoto.selectedPhotoName}  by   <Link to={'/user/' + selectedPhoto.selectedPhotoUser + '/uploads'} >{selectedPhoto.selectedPhotoUser}</Link></div>}
       visible={selectedPhoto.modalVisible}
       footer={footer}
       style={{ top: 20 }}
       maskClosable={false}
       onCancel={selectedPhoto.setModalVisible}
     >
-      <img style={{ width: '100%' }} src={selectedPhoto.selectedPhotoLink} alt={selectedPhoto.selectedPhotoName} />
+      <Spin spinning={loading} size='large'>
+        <img style={{ width: '100%' }} src={imageSrc} alt={selectedPhoto.selectedPhotoName} />
+      </Spin>
     </Modal>
   )
 }
